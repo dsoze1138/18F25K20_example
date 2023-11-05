@@ -3,12 +3,12 @@
 // 'C' source line config statements
  
 // CONFIG1H
-#pragma config FOSC = INTIO67   // Oscillator Selection bits (Internal oscillator block, port function on RA6 and RA7)
+#pragma config FOSC = 6         //Option 0110 HS oscillator, PLL enabled (Clock Frequency = 4 x FOSC1
 #pragma config FCMEN = OFF      // Fail-Safe Clock Monitor Enable bit (Fail-Safe Clock Monitor disabled)
 #pragma config IESO = OFF       // Internal/External Oscillator Switchover bit (Oscillator Switchover mode disabled)
  
 // CONFIG2L
-#pragma config PWRTEN = OFF     // Power-up Timer Enable bit (PWRT disabled)
+#pragma config PWRT = OFF       // Power-up Timer Enable bit (PWRT disabled)
 #pragma config BOREN = OFF      // Brown-out Reset Enable bits (Brown-out Reset disabled in hardware and software)
 #pragma config BORV = 18        // Brown Out Reset Voltage bits (VBOR set to 1.8 V nominal)
  
@@ -61,19 +61,26 @@
 // #pragma config statements should precede project file includes.
 // Use project enums instead of #define for ON and OFF.
  
-#define _XTAL_FREQ  1000000uL
+#define _XTAL_FREQ      8000000
+ 
+//Function Prototypes
+void main(void);
  
 #include <xc.h>
  
 void main(void)
 {
+    OSCTUNEbits.PLLEN = 1;  //PLL enabled for HFINTOSC (8 MHz and 16 MHz only)
+ 
     LATC = 0x00;
     TRISCbits.TRISC6 = 0;   // RC6 is an output
     TRISCbits.TRISC7 = 0;   // RC7 is an output
  
-    while (1) {
+    while (1)
+    {
         LATCbits.LATC6 ^= 1; // toggle RC6
         LATCbits.LATC7 ^= 1; // toggle RC7
         __delay_ms(1000);    // delay 1 second
     }
+ 
 }
